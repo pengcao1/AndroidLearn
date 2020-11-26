@@ -3,6 +3,7 @@
     android:id="@+id/text"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:gravity="center"
     android:padding="8dp"
     android:text="@string/header_text"
     android:textAppearance="?android:attr/textAppearanceLarge" />
