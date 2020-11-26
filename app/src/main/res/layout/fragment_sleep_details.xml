@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="sleepdetails"
+            type="com.example.android.trackmysleepquality.sleepdetails.SleepDetailsViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/details_image"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size"
+            android:layout_marginTop="@dimen/icon_size"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:sleepImage="@{sleepdetails.night}"
+            tools:srcCompat="@drawable/ic_sleep_5" />
+
+        <TextView
+            android:id="@+id/details_quality"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/icon_size"
+            app:layout_constraintEnd_toEndOf="@+id/details_image"
+            app:layout_constraintStart_toStartOf="@+id/details_image"
+            app:layout_constraintTop_toBottomOf="@+id/details_image"
+            app:sleepQualityString="@{sleepdetails.night}"
+            tools:text="Excellent!!" />
+
+        <Button
+            android:id="@+id/details_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:onClick="@{() -> sleepdetails.onClose()}"
+            android:text="@string/close"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="CLOSE" />
+
+        <TextView
+            android:id="@+id/details_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            app:layout_constraintEnd_toEndOf="@+id/details_image"
+            app:layout_constraintStart_toStartOf="@+id/details_image"
+            app:layout_constraintTop_toBottomOf="@+id/details_quality"
+            app:sleepDurationFormatted="@{sleepdetails.night}"
+            tools:text="1/31/2019 4:18 PM" />
+
+        <TextView
+            android:id="@+id/details_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            app:layout_constraintEnd_toEndOf="@+id/details_image"
+            app:layout_constraintStart_toStartOf="@+id/details_image"
+            app:layout_constraintTop_toBottomOf="@+id/details_start"
+            app:sleepDurationFormatted="@{sleepdetails.night}"
+            tools:text="1/31/2019 4:18 PM" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
