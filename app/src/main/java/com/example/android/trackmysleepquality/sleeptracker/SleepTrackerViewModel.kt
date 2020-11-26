@@ -17,11 +17,7 @@
 package com.example.android.trackmysleepquality.sleeptracker
 
 import android.app.Application
-import android.content.res.Resources
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.*
 import com.example.android.trackmysleepquality.database.SleepDatabaseDao
 import com.example.android.trackmysleepquality.database.SleepNight
 import com.example.android.trackmysleepquality.formatNights
@@ -33,21 +29,10 @@ import kotlinx.coroutines.*
 class SleepTrackerViewModel(
         val database: SleepDatabaseDao,
         application: Application) : AndroidViewModel(application) {
-    private var viewModelJob = Job()
 
-    override fun onCleared() {
-        super.onCleared()
-        viewModelJob.cancel()
-    }
-
-    private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
     private val tonight = MutableLiveData<SleepNight>()
     val nights = database.getAllNights()
-
-    val nightsString = Transformations.map(nights) { nights ->
-        formatNights(nights, application.resources)
-    }
 
     private val _navigateToSleepQuality = MutableLiveData<SleepNight>()
     val navigateTOSleepQuality: LiveData<SleepNight> get() = _navigateToSleepQuality
@@ -79,7 +64,7 @@ class SleepTrackerViewModel(
     }
 
     private fun initializeTonight() {
-        uiScope.launch {
+        viewModelScope.launch {
             tonight.value = getTonightFromDatabase()
         }
     }
@@ -95,7 +80,7 @@ class SleepTrackerViewModel(
     }
 
     fun onStartTracking() {
-        uiScope.launch {
+        viewModelScope.launch {
             var newNight = SleepNight()
             insert(newNight)
             tonight.value = getTonightFromDatabase()
@@ -110,7 +95,7 @@ class SleepTrackerViewModel(
 
 
     fun onStopTracking() {
-        uiScope.launch {
+        viewModelScope.launch {
             /*
             * In Kotlin, the return@label syntax is used for specifying which function among several
             * nested ones this statement return from, in this case we are specifying to return from launch(),
@@ -130,35 +115,17 @@ class SleepTrackerViewModel(
     }
 
     fun onClear() {
-        uiScope.launch {
+        viewModelScope.launch {
             clear()
             tonight.value = null
         }
         _shouldShowSnackBar.value = true
     }
 
-    suspend fun clear() {
+    private suspend fun clear() {
         withContext(Dispatchers.IO) {
             database.clear()
         }
     }
-
-    fun someWorkNeedToBeDone() {
-        uiScope.launch {
-            suspendFunction()
-        }
-    }
-
-    private suspend fun suspendFunction() {
-        withContext(Dispatchers.IO) {
-            longRunningWork()
-        }
-    }
-
-    private fun longRunningWork() {
-        TODO("Not yet implemented")
-    }
-
-
 }
 
