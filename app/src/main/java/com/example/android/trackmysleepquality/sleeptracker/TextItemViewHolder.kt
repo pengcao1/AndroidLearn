@@ -1,12 +1,13 @@
 package com.example.android.trackmysleepquality.sleeptracker
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.example.android.trackmysleepquality.R
 import com.example.android.trackmysleepquality.database.SleepNight
 import com.example.android.trackmysleepquality.databinding.ListItemSleepNightBinding
-import com.example.android.trackmysleepquality.generated.callback.OnClickListener
 
 class TextItemViewHolder private constructor(val binding: ListItemSleepNightBinding) : RecyclerView.ViewHolder(binding.root) {
 
@@ -25,16 +26,38 @@ class TextItemViewHolder private constructor(val binding: ListItemSleepNightBind
     }
 }
 
-class SleepNightDiffCallBack : DiffUtil.ItemCallback<SleepNight>() {
-    override fun areItemsTheSame(oldItem: SleepNight, newItem: SleepNight): Boolean {
-        return oldItem.nightId == newItem.nightId
+class SleepNightDiffCallBack : DiffUtil.ItemCallback<DataItem>() {
+    override fun areItemsTheSame(oldItem: DataItem, newItem: DataItem): Boolean {
+        return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: SleepNight, newItem: SleepNight): Boolean {
+    override fun areContentsTheSame(oldItem: DataItem, newItem: DataItem): Boolean {
         return oldItem == newItem
     }
 }
 
 class SleepNightListener(val clickListener: (sleepId: Long) -> Unit) {
     fun onClick(night: SleepNight) = clickListener(night.nightId)
+}
+
+sealed class DataItem {
+    data class SleepNightItem(val sleepNight: SleepNight) : DataItem() {
+        override val id = sleepNight.nightId
+    }
+
+    object Header : DataItem() {
+        override val id = Long.MIN_VALUE
+    }
+
+    abstract val id: Long
+}
+
+class TextViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    companion object {
+        fun from(parent: ViewGroup): TextViewHolder {
+            val layoutInflater = LayoutInflater.from(parent.context)
+            val view = layoutInflater.inflate(R.layout.header, parent, false)
+            return TextViewHolder(view)
+        }
+    }
 }
